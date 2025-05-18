@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend of the GUP-SHUP application",
+  "keywords": [
+    "backend",
+    "GUP-SHUP",
+    "MERN",
+    "stack"
+  ],
+  "license": "ISC",
+  "author": "Luv",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev" : "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongoose": "^8.15.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
