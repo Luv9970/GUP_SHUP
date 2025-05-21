@@ -3,6 +3,8 @@ import User from "../Models/user.model.js"
 import { asyncHandler } from "../Utilities/asyncHandler.utility.js";
 import { errorHandler } from "../Utilities/errorHandler.utility.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
 
 export const register = asyncHandler(async(req,res,next) => {
         const { fullname , username , password , gender} = req.body
@@ -34,10 +36,29 @@ export const register = asyncHandler(async(req,res,next) => {
             avatar
         })
 
-        res.send(200).json({
+        //Creating a token for the user:
+        const tokenData={
+            id:newUser._id,
+        }
+        // const token = jwt.sign(data_jo_save_karana_hai , JWT_Secret , Expiry_time)
+        const token = jwt.sign(tokenData , process.env.JWT_SECRET , {expiresIn: process.env.JWT_EXPIRE})
+
+        res
+        .status(200)
+        .cookie("token", token , {
+            expires:new Date(
+                Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+            ),
+            httpOnly:true,
+            //NODE_ENV by default mil jata hai
+            secure:process.env.NODE_ENV === "production",
+            sameSite: "None"
+        })
+        .json({
             success: true,
             responseData: {
-                newUser
+                newUser,
+                token
             }
         })        
 }
@@ -62,11 +83,44 @@ export const login = asyncHandler(async(req,res,next) => {
             return next(new errorHandler("Please enter a valid username or password" , 400))
         }
 
-        res.send(200).json({
+        //Creating a token for the user:
+        const tokenData={
+            id:user._id,
+        }
+        // const token = jwt.sign(data_jo_save_karana_hai , JWT_Secret , Expiry_time)
+        const token = jwt.sign(tokenData , process.env.JWT_SECRET , {expiresIn: process.env.JWT_EXPIRE})
+
+        res
+        .status(200)
+        .cookie("token",token , {
+            expires:new Date(
+                Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+            ),
+            httpOnly:true,
+            //NODE_ENV by default mil jata hai
+            secure:process.env.NODE_ENV === "production",
+            sameSite: "None"
+        })
+        .json({
             success: true,
             responseData: {
-                user
+                user,
+                token
             }
         })        
 }
 )
+
+export const getProfile = asyncHandler(async(req,res,next) => {
+    const userId = req.user._id;
+    
+    console.log(userId)
+    const profile =await User.findById(userId)
+
+    res.status(200).json({
+        success: true,
+        responseData: {
+            profile
+        }
+    })
+})
