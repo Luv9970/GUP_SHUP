@@ -38,29 +38,27 @@ export const register = asyncHandler(async(req,res,next) => {
             avatar
         })
 
-        // //Creating a token for the user:
-        // const tokenData={
-        //     id:newUser._id,
-        // }
-        // // const token = jwt.sign(data_jo_save_karana_hai , JWT_Secret , Expiry_time)
-        // const token = jwt.sign(tokenData , process.env.JWT_SECRET , {expiresIn: process.env.JWT_EXPIRE})
+        //Creating a token for the user:
+        const tokenData={
+            _id: newUser?._id
+        }
+        // const token = jwt.sign(token_data , JWT_Secret , Expiry_time)
+        const token = jwt.sign(tokenData , process.env.JWT_SECRET , {expiresIn: process.env.JWT_EXPIRE})
 
         res
         .status(200)
-        // .cookie("token", token , {
-        //     expires:new Date(
-        //         Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-        //     ),
-        //     httpOnly:true,
-        //     //NODE_ENV by default mil jata hai
-        //     secure:process.env.NODE_ENV === "production",
-        //     sameSite: "None"
-        // })
+        .cookie("token", token , {
+            expires: new Date(Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
+            httpOnly:true,
+            //NODE_ENV by default mil jata hai
+            secure:process.env.NODE_ENV === "production",
+            sameSite: "None"
+        })
         .json({
             success: true,
             responseData: {
                 newUser,
-                // token
+                token
             }
         })        
 }
@@ -85,38 +83,39 @@ export const login = asyncHandler(async(req,res,next) => {
             return next(new errorHandler("Please enter a valid username or password" , 400))
         }
 
-        // //Creating a token for the user:
-        // const tokenData={
-        //     id:user._id,
-        // }
-        // // const token = jwt.sign(data_jo_save_karana_hai , JWT_Secret , Expiry_time)
-        // const token = jwt.sign(tokenData , process.env.JWT_SECRET , {expiresIn: process.env.JWT_EXPIRE})
+        //Creating a token for the user:
+        const tokenData={
+            id:user._id,
+        }
+        // const token = jwt.sign(data_jo_save_karana_hai , JWT_Secret , Expiry_time)
+        const token = jwt.sign(tokenData , process.env.JWT_SECRET , {expiresIn: process.env.JWT_EXPIRE})
 
         res
         .status(200)
-        // .cookie("token",token , {
-        //     expires:new Date(
-        //         Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-        //     ),
-        //     httpOnly:true,
-        //     //NODE_ENV by default mil jata hai
-        //     secure:process.env.NODE_ENV === "production",
-        //     sameSite: "None"
-        // })
+        .cookie("token",token , {
+            expires:new Date(
+                Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+            ),
+            httpOnly:true,
+            //NODE_ENV by default mil jata hai
+            secure:process.env.NODE_ENV === "production",
+            sameSite: "None"
+        })
         .json({
             success: true,
             responseData: {
                 user,
-                // token
+                token
             }
         })        
 }
 )
 
 export const getProfile = asyncHandler(async(req,res,next) => {
-    const userId = req.user._id;
-    
-    console.log(userId)
+    // console.log(req.user)
+    const userId = req.user.id;
+    // console.log("This is User Id:",userId)
+
     const profile =await User.findById(userId)
 
     res.status(200).json({
@@ -124,5 +123,33 @@ export const getProfile = asyncHandler(async(req,res,next) => {
         responseData: {
             profile
         }
+    })
+})
+
+export const logout = asyncHandler(async(req,res,next) => {
+
+    res
+    .status(200)
+    .cookie("token", "" , {
+        expires: new Date(Date.now()),
+        httpOnly:true,
+    })
+    .json({
+        success: true,
+        message: "Logged out successfully"
+    })
+})
+
+export const getOtherUsers = asyncHandler(async(req,res,next) => {
+
+    const otherUsers = await User.find({
+        _id: { $ne: req.user.id } // Exclude the current user
+    })
+
+    res
+    .status(200)
+    .json({
+        success: true,
+        message: otherUsers,
     })
 })

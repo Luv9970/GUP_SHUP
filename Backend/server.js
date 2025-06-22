@@ -14,7 +14,9 @@ const PORT = process.env.PORT || 5000;
 
 //routes
 import userRoute from './Routes/user.route.js'
-app.use("/api/v1/user" , userRoute)
+import messageRoute from './Routes/message.route.js';
+app.use("/api/v1/user" , userRoute) 
+app.use("/api/v1/message" , messageRoute)
 
 //middlewares
 import { errorMiddleware } from './Middlewares/error.middleware.js';

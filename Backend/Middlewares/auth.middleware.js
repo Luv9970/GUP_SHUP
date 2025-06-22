@@ -11,6 +11,7 @@ export const isAuthenticated = asyncHandler(async(req,res,next) => {
  } 
  
  const tokenData = jwt.verify(token , process.env.JWT_SECRET); 
+//  console.log(tokenData)
  req.user = tokenData;
  next();
 })
