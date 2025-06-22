@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const conversationSchema = new mongoose.Schema({
+    //Participants in the conversation. It is an array.
     participants:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",

@@ -17,8 +17,8 @@ import userRoute from './Routes/user.route.js'
 app.use("/api/v1/user" , userRoute)
 
 //middlewares
-import { erroeMiddlware } from './Middlewares/error.middleware.js';
-app.use(erroeMiddlware);
+import { errorMiddleware } from './Middlewares/error.middleware.js';
+app.use(errorMiddleware);
 
 
 
