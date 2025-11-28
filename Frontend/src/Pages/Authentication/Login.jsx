@@ -4,12 +4,13 @@ import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { IoKeySharp } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import { loginUserThunk } from "../../store/slice/user/user.thunk";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUserThunk } from "../../store/slice/user/user.thunk";
 
 const Login = () => {
   // const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // const { isAuthenticated } = useSelector((state) => state.userReducer);
 
   const [loginData, setLoginData] = useState({
@@ -31,14 +32,15 @@ const Login = () => {
       [e.target.name]: e.target.value,
     }));
   };
-  console.log(loginData)
+  // console.log(loginData)
 
-  // const handleLogin = async () => {
-  //   const response = await dispatch(loginUserThunk(loginData));
-  //   if (response?.payload?.success) {
-  //     navigate("/");
-  //   }
-  // };
+  
+  const handleLogin = async () => {
+    const response = await dispatch(loginUserThunk(loginData));
+    // if (response?.payload?.success) {
+    //   navigate("/");
+    // }
+  };
 
   return (
     <div className="flex justify-center items-center p-6 min-h-screen">
@@ -71,7 +73,7 @@ const Login = () => {
 
             </div>
         <button 
-        // onClick={handleLogin} 
+        onClick={handleLogin} 
         className="btn btn-primary">
           Login
         </button>
